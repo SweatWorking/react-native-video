@@ -48,7 +48,7 @@ static NSString *const timedMetadata = @"timedMetadata";
   NSString * _resizeMode;
   BOOL _fullscreenPlayerPresented;
   UIViewController * _presentingViewController;
-  int _preferredPeakBitrate;
+  NSNumber *_preferredPeakBitrate;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -338,7 +338,9 @@ static NSString *const timedMetadata = @"timedMetadata";
   }
 
   AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
-  item.preferredPeakBitRate = _preferredPeakBitrate;
+  if(_preferredPeakBitrate) {
+    item.preferredPeakBitRate = [_preferredPeakBitrate doubleValue];
+  }
   return item;
 }
 
@@ -528,7 +530,7 @@ static NSString *const timedMetadata = @"timedMetadata";
   [self applyModifiers];
 }
 
-- (void)setPreferredPeakBitrate:(int)preferredPeakBitrate
+- (void)setPreferredPeakBitrate:(NSNumber *)preferredPeakBitrate
 {
     _preferredPeakBitrate = preferredPeakBitrate;
     [self resetPlayerItem];
@@ -536,8 +538,10 @@ static NSString *const timedMetadata = @"timedMetadata";
 
 - (void)resetPlayerItem {
     if(_player && _source) {
+      [self removePlayerItemObservers];
       _playerItem = [self playerItemForSource:_source];
       [_player replaceCurrentItemWithPlayerItem:_playerItem];
+      [self addPlayerItemObservers];
     }
 }
 

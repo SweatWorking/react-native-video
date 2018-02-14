@@ -51,7 +51,7 @@ RCT_EXPORT_VIEW_PROPERTY(onReadyForDisplay, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onPlaybackStalled, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onPlaybackResume, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onPlaybackRateChange, RCTBubblingEventBlock);
-RCT_EXPORT_VIEW_PROPERTY(preferredPeakBitrate, NSString);
+RCT_EXPORT_VIEW_PROPERTY(preferredPeakBitrate, NSNumber);
 
 - (NSDictionary *)constantsToExport
 {
