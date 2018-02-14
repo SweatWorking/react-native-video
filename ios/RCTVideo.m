@@ -318,29 +318,32 @@ static NSString *const timedMetadata = @"timedMetadata";
 
 - (AVPlayerItem*)playerItemForSource:(NSDictionary *)source
 {
+  AVPlayerItem *item;
   bool isNetwork = [RCTConvert BOOL:[source objectForKey:@"isNetwork"]];
   bool isAsset = [RCTConvert BOOL:[source objectForKey:@"isAsset"]];
   NSString *uri = [source objectForKey:@"uri"];
   NSString *type = [source objectForKey:@"type"];
-
+  
   NSURL *url = (isNetwork || isAsset) ?
-    [NSURL URLWithString:uri] :
-    [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] pathForResource:uri ofType:type]];
-
+  [NSURL URLWithString:uri] :
+  [[NSURL alloc] initFileURLWithPath:[[NSBundle mainBundle] pathForResource:uri ofType:type]];
+  
   if (isNetwork) {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:@{AVURLAssetHTTPCookiesKey : cookies}];
-    return [AVPlayerItem playerItemWithAsset:asset];
+    item = [AVPlayerItem playerItemWithAsset:asset];
   }
   else if (isAsset) {
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
-    return [AVPlayerItem playerItemWithAsset:asset];
+    item = [AVPlayerItem playerItemWithAsset:asset];
+  } else {
+    item = [AVPlayerItem playerItemWithURL:url];
   }
-
-  AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
+  
   if(_preferredPeakBitrate) {
     item.preferredPeakBitRate = [_preferredPeakBitrate doubleValue];
   }
+  
   return item;
 }
 
