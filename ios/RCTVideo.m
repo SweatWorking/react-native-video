@@ -20,6 +20,7 @@ static NSString *const timedMetadata = @"timedMetadata";
   AVPlayerLayer *_playerLayer;
   AVPlayerViewController *_playerViewController;
   NSURL *_videoURL;
+  NSDictionary *_source;
 
   /* Required to publish events */
   RCTEventDispatcher *_eventDispatcher;
@@ -47,6 +48,7 @@ static NSString *const timedMetadata = @"timedMetadata";
   NSString * _resizeMode;
   BOOL _fullscreenPlayerPresented;
   UIViewController * _presentingViewController;
+  int _preferredPeakBitrate;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -268,6 +270,8 @@ static NSString *const timedMetadata = @"timedMetadata";
 
 - (void)setSrc:(NSDictionary *)source
 {
+  _source = source;
+  
   [self removePlayerTimeObserver];
   [self removePlayerItemObservers];
   _playerItem = [self playerItemForSource:source];
@@ -333,7 +337,9 @@ static NSString *const timedMetadata = @"timedMetadata";
     return [AVPlayerItem playerItemWithAsset:asset];
   }
 
-  return [AVPlayerItem playerItemWithURL:url];
+  AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
+  item.preferredPeakBitRate = _preferredPeakBitrate;
+  return item;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -520,6 +526,19 @@ static NSString *const timedMetadata = @"timedMetadata";
 {
   _ignoreSilentSwitch = ignoreSilentSwitch;
   [self applyModifiers];
+}
+
+- (void)setPreferredPeakBitrate:(int)preferredPeakBitrate
+{
+    _preferredPeakBitrate = preferredPeakBitrate;
+    [self resetPlayerItem];
+}
+
+- (void)resetPlayerItem {
+    if(_player && _source) {
+      _playerItem = [self playerItemForSource:_source];
+      [_player replaceCurrentItemWithPlayerItem:_playerItem];
+    }
 }
 
 - (void)setPaused:(BOOL)paused
