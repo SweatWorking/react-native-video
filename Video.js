@@ -301,6 +301,7 @@ Video.propTypes = {
   onPlaybackRateChange: PropTypes.func,
   onAudioFocusChanged: PropTypes.func,
   onAudioBecomingNoisy: PropTypes.func,
+  preferredPeakBitrate: PropTypes.number,
 
   /* Required by react-native */
   scaleX: PropTypes.number,
