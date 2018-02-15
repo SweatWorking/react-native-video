@@ -533,10 +533,7 @@ static NSString *const timedMetadata = @"timedMetadata";
 - (void)setPreferredPeakBitrate:(NSNumber *)preferredPeakBitrate
 {
     _preferredPeakBitrate = preferredPeakBitrate;
-    [self resetPlayerItem];
-}
-
-- (void)resetPlayerItem {
+  
     if(_playerItem) {
       _playerItem.preferredPeakBitrate = [_preferredPeakBitrate doubleValue];
     }
