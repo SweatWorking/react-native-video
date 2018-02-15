@@ -535,7 +535,7 @@ static NSString *const timedMetadata = @"timedMetadata";
     _preferredPeakBitrate = preferredPeakBitrate;
   
     if(_playerItem) {
-      _playerItem.preferredPeakBitrate = [_preferredPeakBitrate doubleValue];
+      _playerItem.preferredPeakBitRate = [_preferredPeakBitrate doubleValue];
     }
 }
 
