@@ -20,7 +20,6 @@ static NSString *const timedMetadata = @"timedMetadata";
   AVPlayerLayer *_playerLayer;
   AVPlayerViewController *_playerViewController;
   NSURL *_videoURL;
-  NSDictionary *_source;
 
   /* Required to publish events */
   RCTEventDispatcher *_eventDispatcher;
@@ -270,8 +269,6 @@ static NSString *const timedMetadata = @"timedMetadata";
 
 - (void)setSrc:(NSDictionary *)source
 {
-  _source = source;
-  
   [self removePlayerTimeObserver];
   [self removePlayerItemObservers];
   _playerItem = [self playerItemForSource:source];
@@ -540,11 +537,8 @@ static NSString *const timedMetadata = @"timedMetadata";
 }
 
 - (void)resetPlayerItem {
-    if(_player && _source) {
-      [self removePlayerItemObservers];
-      _playerItem = [self playerItemForSource:_source];
-      [_player replaceCurrentItemWithPlayerItem:_playerItem];
-      [self addPlayerItemObservers];
+    if(_playerItem) {
+      _playerItem.preferredPeakBitrate = [_preferredPeakBitrate doubleValue];
     }
 }
 
