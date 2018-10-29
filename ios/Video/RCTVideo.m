@@ -66,6 +66,7 @@ static int const RCTVideoUnset = -1;
   BOOL _fullscreen;
   NSString * _fullscreenOrientation;
   BOOL _fullscreenPlayerPresented;
+  NSNumber * _preferredPeakBitrate;
   UIViewController * _presentingViewController;
 #if __has_include(<react-native-video/RCTVideoCache.h>)
   RCTVideoCache * _videoCache;
@@ -453,12 +454,12 @@ static int const RCTVideoUnset = -1;
   NSString *uri = [source objectForKey:@"uri"];
   NSString *type = [source objectForKey:@"type"];
 
-  (void(^)(AVPlayerItem *)) handler = ^(AVPlayerItem * playerItem) {
+  void(^handler)(AVPlayerItem *) = ^(AVPlayerItem * playerItem) {
     if(_preferredPeakBitrate) {
-      item.preferredPeakBitRate = [_preferredPeakBitrate doubleValue];
+      playerItem.preferredPeakBitRate = [_preferredPeakBitrate doubleValue];
     }
-    return aHandler(playerItem)
-  }
+    return aHandler(playerItem);
+  };
 
   NSURL *url = isNetwork || isAsset
     ? [NSURL URLWithString:uri]
